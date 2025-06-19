@@ -1,29 +1,24 @@
 import express from 'express';
-import connectedDB from './config/db.js';
 import cors from 'cors';
-import { serve } from "inngest/express";
-import { inngest, functions } from "./inngest/index.js";
 import 'dotenv/config';
-import { clerkMiddleware } from '@clerk/express';
+import connectedDb from './config/db.js';
+import { serve } from "inngest/express";
+import { inngest, functions } from './inngest/index.js'
 
+import { clerkMiddleware } from '@clerk/express'
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+
+// Middleware
 app.use(express.json());
+
 app.use(cors());
-app.use(clerkMiddleware());
+app.use(clerkMiddleware())
+app.use("/api/inngest", serve({ client: inngest, functions }));
+await connectedDb()
+// API Routes
+app.get('/', (req, res) => res.send('Server is Live!'));
 
-// Inngest event handling route
-app.use('/api/inngest', serve({ client: inngest, functions }));
-
-// Root route
-app.get('/', (req, res) => {
-  res.send("Server is live");
-});
-
-// Connect to DB and start server
-await connectedDB()
-  
-    app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
-    });
-  
+app.listen(port, () => 
+  console.log(`Server listening at http://localhost:${port}`)
+);

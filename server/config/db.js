@@ -1,34 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-mongoose.connection.on('connected', () => {
-  console.log('✅ MongoDB connected successfully');
-});
-
-mongoose.connection.on('error', (err) => {
-  console.error('❌ MongoDB connection error:', err);
-});
-
-mongoose.connection.on('disconnected', () => {
-  console.warn('⚠️ MongoDB disconnected');
-});
-
-const connectedDB = async () => {
+// اتصال بقاعدة البيانات باستخدام URI من env
+const connectedDb = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+    console.log("✅ Connected to MongoDB");
   } catch (error) {
-    console.error('❌ Initial DB connection failed:', error.message);
-    process.exit(1); // Optional: stop the app if DB is essential
+    console.error("❌ MongoDB connection error:", error.message);
+    process.exit(1); // خروج من التطبيق في حالة الفشل
   }
 };
 
-// Optional: Close MongoDB on app termination
-process.on('SIGINT', async () => {
-  await mongoose.connection.close();
-  console.log('🔌 MongoDB connection closed due to app termination');
-  process.exit(0);
-});
-
-export default connectedDB;
+export default connectedDb;
