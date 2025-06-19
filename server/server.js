@@ -21,12 +21,9 @@ app.get('/', (req, res) => {
 });
 
 // Connect to DB and start server
-connectedDB()
-  .then(() => {
+await connectedDB()
+  
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });
-  })
-  .catch((err) => {
-    console.error("Failed to connect to DB", err);
-  });
+  
