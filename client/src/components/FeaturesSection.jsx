@@ -3,9 +3,11 @@ import React from 'react'
 import { useNavigate } from 'react-router'
 import Bluecircule from './Bluecircule'
 import { dummyShowsData } from '../assets/assets'
+import { ShareContext } from '../../context/Appcontext'
 import MovieCard from './movieCard'
 
 function FeaturesSection() {
+  const {   show,   image_base_url}=ShareContext()
     const nav=useNavigate()
   return (
     <div className='px-6 md:px-16 lg:px-44 overflow-hidden  '>
@@ -15,7 +17,7 @@ function FeaturesSection() {
     <button className='group flex items-center gap-2 text-sm text-gray-200' onClick={()=>nav('/movies')}>View all <ArrowRight className='group-hover:translate-x-0.5 transition w-5 h-5 '/></button>
     </div>
     <div className='grid grid-cols-1 gap-14 md:grid-cols-4'>
-    {dummyShowsData.slice(0,4).map((movie)=>{
+    {   show.slice(0,4).map((movie)=>{
        return <MovieCard movie={movie}></MovieCard>
     })}
     </div>

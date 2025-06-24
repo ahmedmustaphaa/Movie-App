@@ -3,20 +3,38 @@ import { dummyBookingData } from '../../assets/assets';
 import Title from './Title';
 
 import { dateFormat } from '../../lib/DateFormat'; // تأكد من أن هذه الدالة موجودة
+import { ShareContext } from '../../../context/Appcontext';
 
 function Listbooking() {
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getAllBookings = async () => {
-    setBookings(dummyBookingData);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    getAllBookings();
-  }, []);
-
+   const { axios, image_base_url, getToken } = ShareContext();
+ 
+   const getAllBookings = async () => {
+     try {
+       const token = await getToken();
+ 
+       const { data } = await axios.get('/api/admin/all-boooking', {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       });
+ 
+       if (data.success) {
+         setBookings(data.bookings);
+         console.log(data.bookings);
+       }
+     } catch (error) {
+       console.log(error);
+     } finally {
+       setIsLoading(false);
+     }
+   };
+ 
+   useEffect(() => {
+     getAllBookings();
+   }, []);
   if (isLoading) {
     return <div className="p-5 text-center text-lg">Loading...</div>;
   }

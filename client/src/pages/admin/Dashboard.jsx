@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Bluecircule from '../../components/Bluecircule';
 import { dateFormat } from '../../lib/DateFormat';
+import { ShareContext } from '../../../context/Appcontext';
 
 const currency = '$'; // يمكنك تغييره حسب عملتك
 
@@ -21,6 +22,33 @@ function Dashboard() {
   });
 
   const [loading, setLoading] = useState(true);
+
+    const { axios, image_base_url, getToken } = ShareContext();
+  
+
+ useEffect(() => {
+  const getDashboardData = async () => {
+    const token = await getToken();
+
+    console.log(token)
+
+    try {
+      const { data } = await axios.get('/api/admin/dashboard', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setDashboardData(data.data)
+
+      console.log("Dashboard data:", data); // هنا تتعامل مع البيانات
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
+  getDashboardData(); // لازم تستدعي الدالة هنا داخل useEffect
+}, []); // [] معناها تشغل useEffect مرة واحدة عند التحميل فقط
 
   const dashboardCards = [
     { title: 'Total Bookings', value: dashboardData.totalBookings || "0", icon: ChartLineIcon },
@@ -98,7 +126,7 @@ function Dashboard() {
             className="w-55 rounded-lg overflow-hidden h-full pb-3 bg-primary/10 border border-primary/20 hover:translate-y-1 transition duration-300"
           >
             <img
-              src={show.movie.poster_path}
+              src={image_base_url + show.movie.poster_path}
               alt=""
               className="h-60 w-full object-cover"
             />

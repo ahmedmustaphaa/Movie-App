@@ -2,8 +2,11 @@ import React from 'react';
 import { dummyShowsData } from '../assets/assets';
 import MovieCard from '../components/movieCard';
 import Bluecircule from '../components/Bluecircule';
+import { ShareContext } from '../../context/Appcontext';
 
 function Movies() {
+
+  const {show}=ShareContext()
   return (
     <section className="relative overflow-hidden  pt-[140px] pb-20 px-4 md:px-12 bg-[#0b0b0b] min-h-screen text-white ">
    
@@ -19,9 +22,9 @@ function Movies() {
         </h2>
 
         {/* Movie Grid */}
-        {dummyShowsData.length > 0 ? (
+        {show.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {dummyShowsData.map((movie, index) => (
+            {show.map((movie, index) => (
               <MovieCard key={index} movie={movie} />
             ))}
           </div>

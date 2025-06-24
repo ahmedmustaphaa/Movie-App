@@ -2,8 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StarIcon } from 'lucide-react';
 import timeFormat from '../lib/Timeformat';
+import { ShareContext } from '../../context/Appcontext';
 
 function MovieCard({ movie }) {
+
+  const {   image_base_url}=ShareContext();
   const nav = useNavigate();
 
   const handleNavigate = () => {
@@ -20,7 +23,7 @@ function MovieCard({ movie }) {
 
       {/* الصورة */}
       <img
-        src={movie.backdrop_path}
+        src={image_base_url + movie.backdrop_path}
         alt={movie.title}
         className="rounded-xl h-48 w-full object-cover object-center mb-3 transition-transform duration-500 group-hover:scale-105"
         onClick={handleNavigate}

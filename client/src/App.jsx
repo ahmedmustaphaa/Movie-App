@@ -17,11 +17,16 @@ import Dashboard from './pages/admin/Dashboard'
 import Addshow from './pages/admin/Addshow'
 import Listbooking from './pages/admin/Listbooking'
 import Listshows from './pages/admin/Listshows'
+import { ShareContext } from '../context/Appcontext'
+import { SignIn } from '@clerk/clerk-react'
 function App() {
 
 
   const isAdminRoute=useLocation().pathname.startsWith('/admin')
 
+           const {user}=ShareContext();
+
+  
 
   return  (
   <div>
@@ -36,7 +41,7 @@ function App() {
   <Route path='/my-bookings' element={<Mybooking/>}></Route>
   <Route path='/favorite' element={<Favorite/>}></Route>
   <Route path='/movies/:id/:date' element={<SeatLayout/>}></Route>
-  <Route path='/admin/*' element={<Layout/>}>
+  <Route path='/admin/*' element={ user?<Layout/>:<div className='h-screen flex items-center justify-center'> <SignIn fallbackRedirectUrl={'/admin'}/> </div>}>
   <Route index element={<Dashboard/>} />
   <Route path='add-shows' element={<Addshow/>} />
   <Route path='list-shows' element={<Listshows/>} />
