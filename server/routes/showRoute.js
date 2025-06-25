@@ -3,7 +3,8 @@ import { addShow, getNowPlayingMovie } from '../contollers/showContoller.js';
 import { protectAdmin } from '../middleware/auth.js';
 import { getShows } from '../contollers/showContoller.js';
 import { Show } from '../models/Show.js';
-import { Movie } from '../models/movie.js';
+import { Movie } from '../models/Movie.js';
+
 
 
 
