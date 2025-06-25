@@ -8,5 +8,4 @@ const UserSchema=new mongoose.Schema({
    image:{type:String,required:true},
 })
 
-
-export const User=mongoose.model('user',UserSchema)
+export const User = mongoose.models.user || mongoose.model('user', UserSchema);
