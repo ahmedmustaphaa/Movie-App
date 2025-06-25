@@ -19,6 +19,7 @@ import Listbooking from './pages/admin/Listbooking'
 import Listshows from './pages/admin/Listshows'
 import { ShareContext } from '../context/Appcontext'
 import { SignIn } from '@clerk/clerk-react'
+import Loading from './components/Loading'
 function App() {
 
 
@@ -40,6 +41,7 @@ function App() {
   <Route path='/movies/:id' element={<Moviedetails/>}></Route>
   <Route path='/my-bookings' element={<Mybooking/>}></Route>
   <Route path='/favorite' element={<Favorite/>}></Route>
+  <Route path='/loading/:nextUrl' element={<Loading/>}></Route>
   <Route path='/movies/:id/:date' element={<SeatLayout/>}></Route>
   <Route path='/admin/*' element={ user?<Layout/>:<div className='h-screen flex items-center justify-center'> <SignIn fallbackRedirectUrl={'/admin'}/> </div>}>
   <Route index element={<Dashboard/>} />

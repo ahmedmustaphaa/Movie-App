@@ -1,61 +1,74 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
-import { Menu, SearchIcon, TicketPlus } from 'lucide-react';
-import { Link, useNavigate } from 'react-router';
-import { useAuth, useClerk, UserButton, useUser } from '@clerk/clerk-react';
+import { Menu, X } from 'lucide-react';
+import { useUser, useClerk, UserButton } from '@clerk/clerk-react';
 import { ShareContext } from '../../context/Appcontext';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const {user}=useUser();
-  
-    const {favourite}=ShareContext()
-
-  const {openSignIn}=useClerk();
-  const nav=useNavigate();
+  const { user } = useUser();
+  const { openSignIn } = useClerk();
+  const { favourite } = ShareContext();
 
   return (
-    <div className='fixed w-full top-0 left-0 z-50'>
-      <div className='w-[84%] m-auto py-4 flex items-center justify-between'>
-        <Link to='/'>
-          <img src={logo} alt="Logo" className="h-10" />
-        </Link>
+    <header className="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-md shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+   <div className='flex items-center justify-between px-6 md:px-10 h-16 border-b border-gray-300/30'>
+  <Link to='/'>
+    <h1 className='text-3xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-orange-500 text-transparent bg-clip-text drop-shadow-lg tracking-wide animate-pulse'>
+      AhmedFlix 🎬
+    </h1>
+  </Link>
+</div>
 
-        <div className='hidden md:flex gap-8 bg-[#15263A] px-6 py-4 rounded-full'>
-          <Link to='/' className='text-white hover:text-amber-600 transition'>Home</Link>
-          <Link to='/movies' className='text-white hover:text-amber-600 transition'>Movies</Link>
-          <Link to='/' className='text-white hover:text-amber-600 transition'>Theaters</Link>
-          <Link to='/' className='text-white hover:text-amber-600 transition'>Release</Link>
-          <Link to='/favorite' className='text-white hover:text-amber-600 transition'>Favorite</Link>
-        </div>
 
-        <div className='flex items-center gap-6'>
-          <SearchIcon className='text-white' />
- {!user ?(
-            <button className='bg-primary hover:bg-primary-dull font-medium transition px-6 py-2 rounded-full' onClick={openSignIn}>Login</button>
- ):(
-  <UserButton>
-  <UserButton.MenuItems>
-  
-  </UserButton.MenuItems>
-  </UserButton>
- )}
-          <Menu className='md:hidden cursor-pointer' onClick={() => setIsOpen(!isOpen)} />
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex gap-8 text-white font-medium">
+          <Link className="hover:text-yellow-400 transition" to="/">Home</Link>
+          <Link className="hover:text-yellow-400 transition" to="/movies">Movies</Link>
+          <Link className="hover:text-yellow-400 transition" to="/">Theaters</Link>
+          <Link className="hover:text-yellow-400 transition" to="/">Release</Link>
+          {favourite.length > 0 && (
+            <Link className="hover:text-yellow-400 transition" to="/favorite">Favorite</Link>
+          )}
+        </nav>
+
+        {/* Right Icons */}
+        <div className="flex items-center gap-4">
+          {!user ? (
+            <button
+              onClick={openSignIn}
+              className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-5 rounded-full transition"
+            >
+              Login
+            </button>
+          ) : (
+            <UserButton />
+          )}
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-white"
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className='md:hidden flex flex-col items-start bg-[#15263A] py-4 transition-transform transform translate-x-0 animate-slide-in'>
-          <Link to='/' className='text-white py-2 hover:text-amber-600 transition'>Home</Link>
-          <Link to='/movies' className='text-white py-2 hover:text-amber-600 transition'>Movies</Link>
-          <Link to='/' className='text-white py-2 hover:text-amber-600 transition'>Theaters</Link>
-          <Link to='/' className='text-white py-2 hover:text-amber-600 transition'>Release</Link>
-      {favourite.length > 0 && <Link to='/favorite' className='text-white py-2 hover:text-amber-600 transition'>Favorite</Link>}
+        <div className="md:hidden flex flex-col items-start px-6 pt-4 pb-8 bg-[#0f172a] animate-slide-down origin-top shadow-xl rounded-b-2xl">
+          <Link onClick={()=>setIsOpen(false)}  className="text-white py-2 w-full hover:text-yellow-400 transition" to="/">Home</Link>
+          <Link onClick={()=>setIsOpen(false)} className="text-white py-2 w-full hover:text-yellow-400 transition" to="/movies">Movies</Link>
+          <Link onClick={()=>setIsOpen(false)} className="text-white py-2 w-full hover:text-yellow-400 transition" to="/">Theaters</Link>
+          <Link onClick={()=>setIsOpen(false)} className="text-white py-2 w-full hover:text-yellow-400 transition" to="/">Release</Link>
+          {favourite.length > 0 && (
+            <Link className="text-white py-2 w-full hover:text-yellow-400 transition" to="/favorite">Favorite</Link>
+          )}
         </div>
       )}
-    </div>
+    </header>
   );
 }
 

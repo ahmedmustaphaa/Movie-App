@@ -4,6 +4,7 @@ import Title from './Title';
 
 import { dateFormat } from '../../lib/DateFormat'; // تأكد من أن هذه الدالة موجودة
 import { ShareContext } from '../../../context/Appcontext';
+import Bluecircule from '../../components/Bluecircule';
 
 function Listbooking() {
   const [bookings, setBookings] = useState([]);
@@ -23,7 +24,7 @@ function Listbooking() {
  
        if (data.success) {
          setBookings(data.bookings);
-         console.log(data.bookings);
+         console.log(data);
        }
      } catch (error) {
        console.log(error);
@@ -42,6 +43,10 @@ function Listbooking() {
   return (
     <div className="p-5">
       <Title text1="List" text2="Bookings" />
+       <div className='relative '>
+            <Bluecircule top="100px" left="-10%" />
+              <Bluecircule top='-100px' left='0' />
+          </div>
 
       <div className="overflow-x-auto mt-6">
         <table className="min-w-full rounded-lg overflow-hidden shadow border border-primary/20 bg-primary/20">

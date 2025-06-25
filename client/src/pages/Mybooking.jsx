@@ -3,6 +3,7 @@ import { ShareContext } from '../../context/Appcontext';
 import Bluecircule from '../components/Bluecircule';
 import { dateFormat } from '../lib/DateFormat';
 import isoTimeFormating from '../lib/isoTimeFormating';
+import { Link } from 'react-router';
 
 function Mybooking() {
   const [bookings, setBookings] = useState([]);
@@ -70,9 +71,9 @@ function Mybooking() {
               <div className="flex items-center gap-4">
                 <p className="text-2xl font-semibold">$ {item.amount || 0}</p>
                 {!item.isPaid && (
-                  <button className="my-[60px] m-auto px-6 py-2 rounded-lg text-sm bg-primary hover:bg-primary-dull transition font-medium cursor-pointer">
+                  <Link to={item.paymentLink} className="my-[60px] m-auto px-6 py-2 rounded-lg text-sm bg-primary hover:bg-primary-dull transition font-medium cursor-pointer">
                     Pay Now
-                  </button>
+                  </Link>
                 )}
               </div>
               <div className="text-sm">

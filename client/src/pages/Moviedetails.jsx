@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-
 import Bluecircule from '../components/Bluecircule';
 import { Heart, PlayCircleIcon, StarIcon } from 'lucide-react';
 import timeFormat from '../lib/Timeformat';
@@ -84,7 +83,8 @@ function MovieDetails() {
           </p>
 
           <p className="text-gray-400 text-sm mb-2">
-            <span className="font-semibold text-white">Genres:</span> {showMovie.movie.genres?.map((g) => g.name).join(' | ')}
+            <span className="font-semibold text-white">Genres:</span>{' '}
+            {showMovie.movie.genres?.map((g) => g.name).join(' | ')}
           </p>
 
           <p className="text-gray-400 text-sm">
@@ -93,13 +93,15 @@ function MovieDetails() {
           </p>
 
           <div className="flex items-center flex-wrap gap-4 mt-4">
-            <PlayCircleIcon className='w-5 h-5' />
-            <button className='flex items-center gap-2 px-7 py-3 text-sm bg-gray-800 hover:bg-gray-900 transition rounded-md font-medium cursor-pointer active:scale-95'>
+            <PlayCircleIcon className="w-5 h-5" />
+            <button className="flex items-center gap-2 px-7 py-3 text-sm bg-gray-800 hover:bg-gray-900 transition rounded-md font-medium cursor-pointer active:scale-95">
               Watch Trailer
             </button>
-            <a href="#" className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-transform transform hover:scale-105 shadow-md">
+            <a
+              href="#"
+              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-transform transform hover:scale-105 shadow-md"
+            >
               🎟 Buy Ticket
-              
             </a>
             <button
               onClick={handleFavorite}
@@ -112,42 +114,47 @@ function MovieDetails() {
         </div>
       </div>
 
-      <p className='text-2xl font-medium mt-20'>Your Favorite Cast</p>
-      <div className='overflow-x-auto no-scrollbar mt-8 pb-4'>
-        <div className='flex items-center gap-4 w-max px-4'>
-          {showMovie.movie.casts.slice(0, 12).map((cast) => (
-            <div key={cast.id || cast.name} className='text-center flex items-center flex-col justify-center gap-4'>
-               (
+      {/* ✅ Your Favorite Cast Section */}
+      <p className="text-2xl font-medium mt-20">Your Favorite Cast</p>
+      <div className="overflow-x-auto no-scrollbar mt-8 pb-4">
+        <div className="flex items-center gap-6 w-max px-4">
+          {Array.isArray(showMovie.movie.casts) &&
+            showMovie.movie.casts.slice(0, 12).map((cast, index) => (
+              <div
+                key={cast.id || cast.name || index}
+                className="text-center flex items-center flex-col justify-center gap-3"
+              >
                 <img
-                  src={image_base_url + cast.profile_path}
-                  className='rounded-full h-20 md:h-20 aspect-square object-cover'
-                  alt={cast.name}
+                  src={
+                    cast.profile_path
+                      ? image_base_url + cast.profile_path
+                      : `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 90)}.jpg`
+                  }
+                  className="rounded-full h-20 w-20 object-cover shadow-md border border-gray-600"
+                  alt={cast.name || 'Cast Member'}
                 />
-              ) : (
-                <div className='rounded-full h-20 w-20 bg-gray-700 flex items-center justify-center text-xs text-white'>
-                  No Image
-                </div>
-              )
-              <p className="text-sm">{cast.name}</p>
-            </div>
-          ))}
+                <p className="text-sm text-gray-200 truncate w-24">{cast.name || 'Unknown'}</p>
+              </div>
+            ))}
         </div>
         <Dateselect datetime={showMovie.dateTime} id={id} />
       </div>
 
-      <p className='text-lg font-medium mt-20 mb-8'>You May Also Like</p>
-      <div className='flex flex-wrap w-[90%] max-sm:justify-center gap-4'>
+      {/* Also Like */}
+      <p className="text-lg font-medium mt-20 mb-8">You May Also Like</p>
+      <div className="flex flex-wrap w-[90%] max-sm:justify-center gap-4">
         {show.slice(0, 4).map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
-      <div className='flex justify-center mt-4'>
+
+      <div className="flex justify-center mt-4">
         <button
           onClick={() => {
             nav('/movies');
             scrollTo(0, 0);
           }}
-          className='flex items-center gap-2 px-7 py-3 text-sm bg-gray-800 hover:bg-gray-900 transition rounded-md font-medium cursor-pointer active:scale-95'
+          className="flex items-center gap-2 px-7 py-3 text-sm bg-gray-800 hover:bg-gray-900 transition rounded-md font-medium cursor-pointer active:scale-95"
         >
           Show More
         </button>

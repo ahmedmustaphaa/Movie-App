@@ -1,10 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-function Bluecircule({top= "auto", left= "auto",right = "auto",bottom= "auto"}) {
+function Bluecircule({ top = "auto", left = "auto", right = "auto", bottom = "auto" }) {
   return (
-    <div className='absolute -z-50 h-58 w-58 aspect-square rounded-full bg-primary/30 blur-3xl' 
-    style={{top:top,left:left,right:right ,bottom:bottom}}>Bluecircule</div>
-  )
+    <div
+      className="absolute -z-50 w-[15rem] aspect-square rounded-full bg-blue-500/30 blur-3xl"
+      style={{ top, left, right, bottom }}
+    />
+  );
 }
 
-export default Bluecircule
+export default Bluecircule;

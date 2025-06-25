@@ -10,14 +10,14 @@ import showRouter from './routes/showRoute.js';
 import bookingRouter from './routes/BookingRoute.js';
 import AdminRouter from './routes/AdminRouter.js';
 import favRouter from './routes/favouriteRouter.js';
-import { stripeWebHooks } from './contollers/stripeWebhooks.js';
+
 
 const app = express();
 const port = 3000;
 
 // Middleware
 app.use(clerkMiddleware())
-app.use('/api/stripe', express.raw({ type: 'application/json' }), stripeWebHooks);
+
 
 app.use(express.json());
 

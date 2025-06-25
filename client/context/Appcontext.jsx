@@ -63,6 +63,7 @@ function Appcontext({ children }) {
   const fetchShow = async () => {
     try {
       const token = await getToken();
+          console.log(token)
 
       const { data } = await axios.get('/api/show/all', {
         headers: {
@@ -72,6 +73,8 @@ function Appcontext({ children }) {
 
 
       setShow(data.shows);
+
+      console.log(data)
    
     } catch (error) {
       console.log('Error fetching shows:', error);

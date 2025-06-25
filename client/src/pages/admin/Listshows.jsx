@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { dummyShowsData } from '../../assets/assets';
 import Title from './Title';
 import { ShareContext } from '../../../context/Appcontext';
+import { Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Bluecircule from '../../components/Bluecircule';
 
-function Listshows() {
+function ListShows() {
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,6 +21,8 @@ function Listshows() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      console.log(data);
 
       if (data.success) {
         setShows(data.shows);
@@ -34,45 +39,61 @@ function Listshows() {
   }, []);
 
   if (loading) {
-    return <div className='p-5 text-center text-lg'>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className='p-5'>
+    <div className="p-6">
+      <div className='relative'>
+        <Bluecircule top="100px" left="-10%" />
+        <Bluecircule top='-100px' left='0' />
+      </div>
       <Title text1="List" text2="Shows" />
 
       <div className="overflow-x-auto mt-6">
-        <table className="w-full text-sm text-left border-collapse rounded-lg shadow bg-white">
+        <motion.table
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="min-w-full text-sm text-left border-collapse rounded-lg shadow-md bg-white overflow-hidden"
+        >
           <thead className="text-white bg-primary">
             <tr>
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">🎬 Movie Title</th>
-              <th className="px-4 py-3">💵 Price</th>
-              <th className="px-4 py-3">🕒 Date & Time</th>
-              <th className="px-4 py-3">🎟️ Booked Seats</th>
+              <th className="  md:px-4 py-3 text-xs uppercase tracking-wider">#</th>
+              <th className="md:px-4 py-3 text-xs uppercase tracking-wider">🎬 Movie Title</th>
+              <th className="md:px-4 py-3 text-xs uppercase tracking-wider">💵 Price</th>
+              <th className="md:px-4 py-3 text-xs uppercase tracking-wider">🕒 Date & Time</th>
+              <th className="md:px-4 py-3 text-xs uppercase tracking-wider">🎟️ Booked Seats</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700 divide-y">
+          <tbody className="divide-y divide-gray-200 text-gray-700">
             {shows.map((show, index) => (
-              <tr key={show._id} className="hover:bg-gray-50 transition-all">
-                <td className="px-4 py-3 font-medium">{index + 1}</td>
-                <td className="px-4 py-3">{show.movie.title}</td>
-                <td className="px-4 py-3">${show.showPrice}</td>
-                <td className="px-4 py-3">
+              <tr
+                key={show._id}
+                className="hover:bg-gray-50 transition duration-200 ease-in-out"
+              >
+                <td className="px-4 py-3 font-semibold text-sm text-gray-800">{index + 1}</td>
+                <td className="px-4 py-3 text-sm">{show.movie.title}</td>
+                <td className="px-4 py-3 text-sm text-green-600 font-medium">${show.showPrice}</td>
+                <td className="px-4 py-3 text-sm">
                   {new Date(show.showDateTime).toLocaleString()}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-sm">
                   {show.occupiedSeats && show.occupiedSeats.length > 0
                     ? show.occupiedSeats.join(', ')
-                    : '—'}
+                    : <span className="text-gray-400">{"A,c"}</span>}
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </motion.table>
       </div>
     </div>
   );
 }
 
-export default Listshows;
+export default ListShows;

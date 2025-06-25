@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Title from './Title';
-import { CheckIcon, StarIcon } from 'lucide-react';
+import { CheckIcon } from 'lucide-react';
 import { dummyShowsData } from '../../assets/assets';
-import { kconverter } from '../../lib/KConverter';
 import { ShareContext } from '../../../context/Appcontext';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+import Bluecircule from '../../components/Bluecircule';
 
-function Addshow() {
+function AddShow() {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [dateTimeSelection, setDateTimeSelection] = useState({});
-  const [dateTimeInput, setDateTimeInput] = useState("");
-  const [showPrice, setShowPrice] = useState("");
+  const [dateTimeInput, setDateTimeInput] = useState('');
+  const [showPrice, setShowPrice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingMovies, setIsLoadingMovies] = useState(true);
 
   const { axios, image_base_url, getToken } = ShareContext();
 
-  // جلب الأفلام
   useEffect(() => {
     const fetchNowPlaying = async () => {
       try {
@@ -26,21 +28,21 @@ function Addshow() {
             Authorization: `Bearer ${token}`,
           },
         });
-
         setNowPlayingMovies(data.movies || dummyShowsData);
       } catch (error) {
-        console.error("Error fetching movies:", error);
+        console.error('Error fetching movies:', error);
         setNowPlayingMovies(dummyShowsData);
+      } finally {
+        setIsLoadingMovies(false);
       }
     };
 
     fetchNowPlaying();
   }, []);
 
-  // إضافة تاريخ ووقت
   const handleDateTimeAdd = () => {
     if (!dateTimeInput) return;
-    const [date, time] = dateTimeInput.split("T");
+    const [date, time] = dateTimeInput.split('T');
     if (!date || !time) return;
 
     setDateTimeSelection((prev) => {
@@ -53,11 +55,9 @@ function Addshow() {
       }
       return prev;
     });
-
-    setDateTimeInput("");
+    setDateTimeInput('');
   };
 
-  // إزالة وقت معين
   const handleRemoveTime = (date, time) => {
     setDateTimeSelection((prev) => {
       const filteredTimes = prev[date].filter((t) => t !== time);
@@ -72,15 +72,10 @@ function Addshow() {
     });
   };
 
-  // إرسال العرض إلى السيرفر
   const addShow = async () => {
-    const showsInput = Object.entries(dateTimeSelection).map(([date, times]) => ({
-      date,
-      times,
-    }));
-
+    const showsInput = Object.entries(dateTimeSelection).map(([date, times]) => ({ date, times }));
     if (!selectedMovie || !showPrice || showsInput.length === 0) {
-      alert("يرجى تعبئة كل الحقول المطلوبة");
+      toast.error('يرجى تعبئة كل الحقول المطلوبة');
       return;
     }
 
@@ -93,80 +88,91 @@ function Addshow() {
     try {
       setIsSubmitting(true);
       const token = await getToken();
-
-      const { data } = await axios.post('/api/show/add', payload, {
+      await axios.post('/api/show/add', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-          toast.success("Movie addedd successfully")
+      toast.success('تمت إضافة العرض بنجاح');
       setSelectedMovie(null);
       setDateTimeSelection({});
-      setShowPrice("");
+      setShowPrice('');
     } catch (error) {
-      console.error("Error adding show:", error);
-      alert("❌ فشل في إضافة العرض. تأكد من البيانات.");
+      console.error('Error adding show:', error);
+      toast.error('❌ فشل في إضافة العرض');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="p-5">
-      <Title text1="Add" text2="Shows" />
-      <p className="mt-10 text-lg font-medium">Now Playing Movies</p>
+    <div className="p-6 space-y-6 animate-fadeIn">
+    <div className='relative '>
+      <Bluecircule top="100px" left="-10%" />
 
-      <div className="flex flex-wrap gap-4 mt-4">
-        {nowPlayingMovies.map((movie) => (
-          <div
-            key={movie.id}
-            onClick={() => setSelectedMovie(movie.id)}
-            className={`relative max-w-40 cursor-pointer border ${selectedMovie === movie.id ? 'border-primary' : 'border-transparent'} hover:-translate-y-1 transition`}
-          >
-            <img
-              src={image_base_url + movie.poster_path}
-              alt={movie.title}
-              className="w-full rounded object-cover"
-            />
-            <div className="text-sm p-2">
-              <p className="font-medium truncate">{movie.title}</p>
-              <p className="text-gray-400 text-sm">{movie.release_date}</p>
-            </div>
-            {selectedMovie === movie.id && (
-              <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
-                <CheckIcon size={14} />
-              </div>
-            )}
+    </div>
+      <Title text1="Add" text2="Shows" />
+
+      <div>
+        <p className="text-lg font-semibold text-gray-700">Now Playing Movies</p>
+        {isLoadingMovies ? (
+          <div className="flex justify-center mt-6">
+            <Loader2 className="animate-spin text-primary w-6 h-6" />
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            {nowPlayingMovies.map((movie) => (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                key={movie.id}
+                onClick={() => setSelectedMovie(movie.id)}
+                className={`relative cursor-pointer rounded overflow-hidden shadow-md w-full transition duration-300 border ${selectedMovie === movie.id ? 'border-primary' : 'border-transparent'}`}
+              >
+                <img
+                  src={image_base_url + movie.poster_path}
+                  alt={movie.title}
+                  className="w-full h-52 object-cover"
+                />
+                <div className="p-2 bg-[#0000004d]">
+                  <p className="font-semibold text-sm truncate text-[white]">{movie.title}</p>
+                  <p className="text-[white] text-xs">{movie.release_date}</p>
+                </div>
+                {selectedMovie === movie.id && (
+                  <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
+                    <CheckIcon size={14} />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* سعر العرض */}
-      <div className="mt-6">
-        <label className="block text-sm mb-1">Show Price</label>
+      <div>
+        <label className="block text-sm font-medium mb-1">Show Price</label>
         <input
           type="number"
           value={showPrice}
           onChange={(e) => setShowPrice(e.target.value)}
-          className="w-40 p-2 border rounded"
+          className="w-40 p-2 border rounded focus:outline-primary"
           placeholder="مثلاً: 20"
         />
       </div>
 
-      {/* إدخال وقت وتاريخ العرض */}
-      <div className="mt-6">
-        <label className="block text-sm mb-1">Select Date and Time</label>
+      <div>
+        <label className="block text-sm font-medium mb-1">Select Date and Time</label>
         <div className="flex gap-2 items-center">
           <input
             type="datetime-local"
             value={dateTimeInput}
             onChange={(e) => setDateTimeInput(e.target.value)}
-            className="p-2 border rounded"
+            className="p-2 border rounded focus:outline-primary"
           />
           <button
             onClick={handleDateTimeAdd}
-            className="bg-primary text-white px-3 py-2 rounded"
+            className="bg-primary text-white px-4 py-2 rounded hover:opacity-90 disabled:opacity-50"
             disabled={!dateTimeInput}
           >
             Add Time
@@ -174,9 +180,8 @@ function Addshow() {
         </div>
       </div>
 
-      {/* عرض الأوقات المختارة */}
       {Object.keys(dateTimeSelection).length > 0 && (
-        <div className="mt-6">
+        <div>
           <h3 className="text-sm font-medium mb-2">Selected Times</h3>
           {Object.entries(dateTimeSelection).map(([date, times]) => (
             <div key={date} className="mb-2">
@@ -199,18 +204,19 @@ function Addshow() {
         </div>
       )}
 
-      {/* زر إرسال */}
-      <button
+      <motion.button
+        whileTap={{ scale: 0.95 }}
         onClick={addShow}
         disabled={
           !selectedMovie || !showPrice || Object.keys(dateTimeSelection).length === 0 || isSubmitting
         }
-        className="mt-6 bg-primary text-white px-4 py-2 rounded disabled:opacity-50"
+        className="bg-primary text-white px-6 py-2 rounded shadow hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
       >
-        {isSubmitting ? "Adding..." : "Add Show"}
-      </button>
+        {isSubmitting && <Loader2 className="animate-spin w-4 h-4" />}
+        {isSubmitting ? 'Adding...' : 'Add Show'}
+      </motion.button>
     </div>
   );
 }
 
-export default Addshow;
+export default AddShow;

@@ -38,6 +38,7 @@ function SeatLayout() {
   const BookTicket = async () => {
     const token = await getToken();
 
+
     try {
       if (!selectedTime || !selectedSeats.length) {
         return toast.error('الرجاء اختيار الوقت والمقاعد أولاً');
@@ -56,6 +57,8 @@ function SeatLayout() {
         }
       );
 
+
+      console.log(data)
       if (data.success) {
         toast.success(data.message);
        window.location.href=data.url
