@@ -100,6 +100,7 @@ function AddShow() {
       setShowPrice('');
     } catch (error) {
       console.error('Error adding show:', error);
+      console.log(error.message)
       toast.error('❌ فشل في إضافة العرض');
     } finally {
       setIsSubmitting(false);

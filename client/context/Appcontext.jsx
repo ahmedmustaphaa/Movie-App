@@ -65,11 +65,7 @@ function Appcontext({ children }) {
       const token = await getToken();
           console.log(token)
 
-      const { data } = await axios.get('/api/show/all', {
-        headers: {
-          Authorization: `Bearer ${token}`, // ← إضافة التوكن لو الـ route محمي
-        },
-      });
+      const { data } = await axios.get('/api/show/all');
 
 
       setShow(data.shows);

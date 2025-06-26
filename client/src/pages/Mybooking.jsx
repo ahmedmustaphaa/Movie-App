@@ -79,11 +79,11 @@ function Mybooking() {
               <div className="text-sm">
                 <p>
                   <span className="text-gray-400">Total Tickets:</span>{' '}
-                  {item.bookedSeats?.length || 0}
+                  {item.bookedSeats?.length || 4}
                 </p>
                 <p>
                   <span className="text-gray-400">Seat Numbers:</span>{' '}
-                  {item.bookedSeats?.join(', ') || 'غير محدد'}
+                  {item.bookedSeats?.join(', ') || 'Az bc '}
                 </p>
               </div>
             </div>
