@@ -6,9 +6,9 @@ import { serve } from "inngest/express";
 import { inngest, functions } from './inngest/index.js'
 
 import { clerkMiddleware } from '@clerk/express'
-import showRouter from './routes/showRoute.js';
-import bookingRouter from './routes/BookingRoute.js';
-import AdminRouter from './routes/AdminRouter.js';
+// import showRouter from './routes/showRoute.js';
+// import bookingRouter from './routes/BookingRoute.js';
+// import AdminRouter from './routes/AdminRouter.js';
 import favRouter from './routes/favouriteRouter.js';
 
 
@@ -22,9 +22,9 @@ app.use(clerkMiddleware())
 app.use(express.json());
 
 app.use(cors());
-app.use('/api/show',showRouter);
-app.use('/api/booking',bookingRouter);
-app.use('/api/admin',AdminRouter);
+// app.use('/api/show',showRouter);
+// app.use('/api/booking',bookingRouter);
+// app.use('/api/admin',AdminRouter);
 app.use('/api/user',favRouter);
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
