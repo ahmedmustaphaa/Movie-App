@@ -11,7 +11,7 @@ import { Movie } from '../models/Movie.js';
 const showRouter=express.Router();
 
 showRouter.post('/add',protectAdmin, addShow);
-showRouter.get('/mow-playing',protectAdmin,getNowPlayingMovie)
+showRouter.get('/mow-playing',getNowPlayingMovie)
 showRouter.get('/all',getShows)
 showRouter.get('/:id', async (req, res) => {
   try {
